@@ -1,3 +1,4 @@
+<?php require_once('connect.php'); ?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -27,10 +28,44 @@
         <div id="content" class="form">
 			<!--%%%%% Main block %%%%-->
 			<!--Form -->
-			
+			<?php
+        session_start();
+           $RID = $_SESSION['RID'];
+           $BID = $_SESSION['BID'];
+           
+           $checkin = $_POST['check_in_date'];
+           $checkout = $_POST['check_out_date'];
+
+$c= "select * from book, customer, room where book.C_ID=customer.ID and room.ID=book.R_ID  ";
+$b= "select * from building, room where room.B_ID=building.ID ";
+
+ $r="UPDATE book SET Check_inDate='$checkin', Check_outDate='$checkout' where book.ID=$BID";
+            $result=$mysqli->query($c);
+            if(!$result){
+                echo "Select failed. Error: ".$mysqli->error ;
+                return false;
+            }
+            $result1=$mysqli->query($b);
+            if(!$result1){
+                echo "Select failed. Error: ".$mysqli->error ;
+                return false;
+            }
+            $result2=$mysqli->query($r);
+            if(!$result){
+                echo "Select failed. Error: ".$mysqli->error ;
+                return false;
+            }
+
+            $row=$result->fetch_array();
+            $row1=$result1->fetch_array();
+            $row2=$result1->fetch_array();
+            
+
+
+            ?>
 				<h2>Completed Booking<p></p></h2>
 				
-				<h4>Booking ID: xxxxx</h4>
+				<h4>Booking ID: <?php echo $row['ID']; ?> </h4>
                
 				<div class="row">
                     <div class="column" style="background-color:none;">
@@ -39,16 +74,16 @@
                     </div>
                     <div class="column" style="background-color:none;">
                      
-                      <p> &emsp;&emsp; Buiding Name: xxxxxxxx</p>
-                      <p>&emsp;&emsp;Check in Date :  </p>
-                      &emsp; <input type="date" name="check_in_date">
-                      <p>&emsp;&emsp; No. of People: x</p>
+                      <p> &emsp;&emsp; Building Name: <?php echo $row1['B_Name']; ?> </p>
+                      <p>&emsp;&emsp;Check in Date :  <?php echo $row['Check_inDate']; ?></p>
+                      <!-- &emsp; //<input type="text  " name="check_in_date"> -->
+                      <p>&emsp;&emsp; No. of People: <?php echo $row['MaxAdult']; ?></p>
                     </div>
                     <div class="column" style="background-color:none;">
-                        <p> &emsp; Room Name: xxxxxxxx</p>
-                        <p>&emsp;Check out Date :  </p>
-                         <input type="date" name="check_out_date">
-                        <p>&emsp; Price: x</p>
+                        <p> &emsp; Room Name: <?php echo $row1['R_Name']; ?></p>
+                        <p>&emsp;Check out Date :  <?php echo $row['Check_outDate']; ?></p>
+                         <!-- <input type="text" name="check_out_date"> -->
+                        <p>&emsp; Price: <?php echo $row['Price']; ?></p>
                     </div>
                     
                   </div>
